@@ -43,7 +43,7 @@ ucs_argument_spec = dict(
     hostname=dict(type='str', required=True),
     username=dict(type='str', default='admin'),
     password=dict(type='str', required=True, no_log=True),
-    port=dict(type='int', default=None),
+    port=dict(type='int', default=443),
     use_proxy=dict(type='bool', default=True),
     proxy=dict(type='str', default=None),
 )
