@@ -31,20 +31,19 @@ import traceback
 
 # from ansible.module_utils.basic import missing_required_lib
 
-UCSMSDK_IMP_ERR = None
+UCSCSDK_IMP_ERR = None
 try:
-    import ucsmsdk
-    HAS_UCSMSDK = True
+    import ucscsdk
+    HAS_UCSCSDK = True
 except Exception:
-    UCSMSDK_IMP_ERR = traceback.format_exc()
-    HAS_UCSMSDK = False
+    UCSCSDK_IMP_ERR = traceback.format_exc()
+    HAS_UCSCSDK = False
 
 ucs_argument_spec = dict(
     hostname=dict(type='str', required=True),
     username=dict(type='str', default='admin'),
     password=dict(type='str', required=True, no_log=True),
     port=dict(type='int', default=None),
-    use_ssl=dict(type='bool', default=True),
     use_proxy=dict(type='bool', default=True),
     proxy=dict(type='str', default=None),
 )
@@ -55,16 +54,16 @@ class UCSModule():
     def __init__(self, module):
         self.module = module
         self.result = {}
-        if not HAS_UCSMSDK:
-            # self.module.fail_json(msg=missing_required_lib('ucsmsdk'), exception=UCSMSDK_IMP_ERR)
-            self.module.fail_json(msg='ucsmsdk is required for this module')
+        if not HAS_UCSCSDK:
+            # self.module.fail_json(msg=missing_required_lib('ucscsdk'), exception=UCSCSDK_IMP_ERR)
+            self.module.fail_json(msg='ucscsdk is required for this module')
         self.login()
 
     def __del__(self):
         self.logout()
 
     def login(self):
-        from ucsmsdk.ucshandle import UcsHandle
+        from ucscsdk.ucschandle import UcscHandle
 
         # use_proxy=yes (default) and proxy=None (default) should be using the system defined proxy
         # use_proxy=yes (default) and proxy=value should use the provided proxy
@@ -77,12 +76,11 @@ class UCSModule():
             proxy = {}
 
         try:
-            handle = UcsHandle(
+            handle = UcscHandle(
                 ip=self.module.params['hostname'],
                 username=self.module.params['username'],
                 password=self.module.params['password'],
                 port=self.module.params['port'],
-                secure=self.module.params['use_ssl'],
                 proxy=proxy
             )
             handle.login()
