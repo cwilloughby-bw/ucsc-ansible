@@ -102,8 +102,8 @@ def main():
     err = False
 
     # UCSModule creation above verifies ucsmsdk is present and exits on failure.  Additional imports are done below.
-    from ucsmsdk.mometa.ls.LsServer import LsServer
-    from ucsmsdk.mometa.ls.LsPower import LsPower
+    from ucscsdk.mometa.ls.LsServer import LsServer
+    from ucscsdk.mometa.ls.LsPower import LsPower
 
     changed = False
     try:
