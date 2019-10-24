@@ -1,6 +1,6 @@
 [![](https://ucspython.herokuapp.com/badge.svg)](https://ucspython.herokuapp.com)
 
-# ucsm-ansible
+# ucsc-ansible
 
 * Apache License, Version 2.0 (the "License") 
 
