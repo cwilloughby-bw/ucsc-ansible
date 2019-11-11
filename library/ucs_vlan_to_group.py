@@ -77,6 +77,7 @@ def main():
         vlangroup=dict(type='str', required=True),
         vlanname=dict(type='str', required=True),
         state=dict(default='present', choices=['present', 'absent'], type='str'),
+        domaingroup=dict(type='str', default='')
     )
 
     module = AnsibleModule(
@@ -90,8 +91,8 @@ def main():
 
     err = False
 
-    from ucsmsdk.mometa.fabric.FabricNetGroup import FabricNetGroup
-    from ucsmsdk.mometa.fabric.FabricPooledVlan import FabricPooledVlan
+    from ucscsdk.mometa.fabric.FabricNetGroup import FabricNetGroup
+    from ucscsdk.mometa.fabric.FabricPooledVlan import FabricPooledVlan
 
     
     changed = False
@@ -99,24 +100,29 @@ def main():
         dngroup1_exists = False
         dnvlan1_exists = False
         dnpooled1_exists = False
+        dn_base = ''
+        if module.params['domaingroup']:
+            dn_base = 'domaingroup-root/domaingroup-{}/fabric/lan'.format(module.params['domaingroup'])
+        else:
+            dn_base = 'domaingroup-root/fabric/lan'
         
         #dn = fabric/lan/net-group-VLANGROUP
         #Check for VLAN Group
-        dngroup = 'fabric/lan/net-group-' + module.params['vlangroup']
+        dngroup = dn_base + '/net-group-' + module.params['vlangroup']
         dngroup1 = ucs.login_handle.query_dn(dngroup)
 
         #dn = fabric/lan/net-VLANNAME
         #Check for VLAN
-        dnvlan = 'fabric/lan/net-' + module.params['vlanname']
+        dnvlan = dn_base + '/net-' + module.params['vlanname']
         dnvlan1 = ucs.login_handle.query_dn(dnvlan)
 
         #dn = fabric/lan/net-group-VLANGROUP/net-VLANNAME
         #Check for VLAN within VLAN Group
-        dnpooled = 'fabric/lan/net-group-' + module.params['vlangroup'] + '/net-' + module.params['vlanname']
+        dnpooled = dn_base + '/net-group-' + module.params['vlangroup'] + '/net-' + module.params['vlanname']
         dnpooled1 = ucs.login_handle.query_dn(dnpooled)
 
         #Configuration MOs. Couldn't really get this to work off the DNs, so I built additional objects.
-        mo = FabricNetGroup(parent_mo_or_dn="fabric/lan", name=module.params['vlangroup'])
+        mo = FabricNetGroup(parent_mo_or_dn=dn_base, name=module.params['vlangroup'])
         mo_1 = FabricPooledVlan(parent_mo_or_dn=mo, name=module.params['vlanname'])
 
         if not dngroup1:

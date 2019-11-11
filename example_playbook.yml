@@ -14,3 +14,12 @@
       id: '2'
       native: 'no'
       domaingroup: 'Lab-RDU'
+  - name: Configure VLAN-Group
+    ucs_vlan_to_group:
+      hostname: "{{ inventory_hostname }}"
+      username: "{{ username | default(omit) }}"
+      password: "{{ password }}"
+      state: "{{ state | default(omit) }}"
+      vlangroup: 'RHEV-VLANs'
+      vlanname: vlan2
+      domaingroup: 'Lab-RDU'
