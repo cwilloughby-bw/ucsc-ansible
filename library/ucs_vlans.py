@@ -129,8 +129,9 @@ def main():
 
     err = False
 
-    # UCSModule creation above verifies ucsmsdk is present and exits on failure, so additional imports are done below.
-    from ucsmsdk.mometa.fabric.FabricVlan import FabricVlan
+    # UCSModule creation above verifies ucscsdk is present and exits on failure, so additional imports are done below.
+    from ucscsdk.mometa.fabric.FabricLanCloud import FabricLanCloud
+    from ucscsdk.mometa.fabric.FabricVlan import FabricVlan
 
     changed = False
     try:
