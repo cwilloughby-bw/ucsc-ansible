@@ -13,3 +13,4 @@
       name: vlan2
       id: '2'
       native: 'no'
+      domaingroup: 'Lab-RDU'

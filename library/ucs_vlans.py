@@ -116,6 +116,7 @@ def main():
         sharing=dict(type='str', default='none', choices=['none', 'primary', 'isolated', 'community']),
         native=dict(type='str', default='no', choices=['yes', 'no']),
         state=dict(type='str', default='present', choices=['present', 'absent']),
+        domaingroup=dict(type='str', default='')
     )
 
     module = AnsibleModule(
@@ -138,7 +139,12 @@ def main():
         mo_exists = False
         props_match = False
         # dn is fabric/lan/net-<name> for common vlans or fabric/lan/[A or B]/net-<name> for A or B
-        dn_base = 'fabric/lan'
+        dn_base = ''
+        if module.params['domaingroup']:
+            dn_base = 'domaingroup-root/domaingroup-{}/fabric/lan'.format(module.params['domaingroup'])
+        else:
+            dn_base = 'domaingroup-root/fabric/lan'
+        print(dn_base)
         if module.params['fabric'] != 'common':
             dn_base += '/' + module.params['fabric']
         dn = dn_base + '/net-' + module.params['name']
