@@ -187,7 +187,7 @@ RETURN = r'''
 
 
 def update_ip_pool(ucs, module):
-    from ucsmsdk.mometa.ippool.IppoolPool import IppoolPool
+    from ucscsdk.mometa.ippool.IppoolPool import IppoolPool
 
     mo = IppoolPool(
         parent_mo_or_dn=module.params['org_dn'],
@@ -254,7 +254,7 @@ def update_ip_block(ucs, mo, ip_block, ip_version):
     remove_ip_block(ucs, mo.dn, ip_block, ip_version)
     if not ip_block['state'] == 'absent':
         if ip_version == 'v6':
-            from ucsmsdk.mometa.ippool.IppoolIpV6Block import IppoolIpV6Block
+            from ucscsdk.mometa.ippool.IppoolIpV6Block import IppoolIpV6Block
             IppoolIpV6Block(parent_mo_or_dn=mo,
                             to=ip_block['ipv6_last_addr'],
                             r_from=ip_block['ipv6_first_addr'],
@@ -266,7 +266,7 @@ def update_ip_block(ucs, mo, ip_block, ip_version):
             ucs.login_handle.add_mo(mo, True)
             ucs.login_handle.commit()
         else:
-            from ucsmsdk.mometa.ippool.IppoolBlock import IppoolBlock
+            from ucscsdk.mometa.ippool.IppoolBlock import IppoolBlock
             IppoolBlock(parent_mo_or_dn=mo,
                         to=ip_block['last_addr'],
                         r_from=ip_block['first_addr'],
@@ -344,8 +344,8 @@ def main():
 
     err = False
 
-    from ucsmsdk.mometa.ippool.IppoolBlock import IppoolBlock
-    from ucsmsdk.mometa.ippool.IppoolIpV6Block import IppoolIpV6Block
+    from ucscsdk.mometa.ippool.IppoolBlock import IppoolBlock
+    from ucscsdk.mometa.ippool.IppoolIpV6Block import IppoolIpV6Block
 
     changed = False
     try:

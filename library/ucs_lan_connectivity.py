@@ -103,7 +103,7 @@ options:
     - Org dn (distinguished name)
     default: org-root
 requirements:
-- ucsmsdk
+- ucscsdk
 author:
 - David Soper (@dsoper2)
 - CiscoUcs (@CiscoUcs)
@@ -155,10 +155,10 @@ from ansible.module_utils.remote_management.ucs import UCSModule, ucs_argument_s
 
 
 def configure_lan_connectivity(ucs, module, dn):
-    from ucsmsdk.mometa.vnic.VnicLanConnPolicy import VnicLanConnPolicy
-    from ucsmsdk.mometa.vnic.VnicEther import VnicEther
-    from ucsmsdk.mometa.vnic.VnicIScsiLCP import VnicIScsiLCP
-    from ucsmsdk.mometa.vnic.VnicVlan import VnicVlan
+    from ucscsdk.mometa.vnic.VnicLanConnPolicy import VnicLanConnPolicy
+    from ucscsdk.mometa.vnic.VnicEther import VnicEther
+    from ucscsdk.mometa.vnic.VnicIScsiLCP import VnicIScsiLCP
+    from ucscsdk.mometa.vnic.VnicVlan import VnicVlan
 
     if not module.check_mode:
         try:

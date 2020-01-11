@@ -240,8 +240,8 @@ def main():
     err = False
 
     # UCSModule creation above verifies ucsmsdk is present and exits on failure.  Additional imports are done below.
-    from ucsmsdk.mometa.vnic.VnicLanConnTempl import VnicLanConnTempl
-    from ucsmsdk.mometa.vnic.VnicEtherIf import VnicEtherIf
+    from ucscsdk.mometa.vnic.VnicLanConnTempl import VnicLanConnTempl
+    from ucscsdk.mometa.vnic.VnicEtherIf import VnicEtherIf
 
     changed = False
     try:

@@ -115,8 +115,8 @@ def main():
 
     err = False
 
-    from ucsmsdk.mometa.macpool.MacpoolPool import MacpoolPool
-    from ucsmsdk.mometa.macpool.MacpoolBlock import MacpoolBlock
+    from ucscsdk.mometa.macpool.MacpoolPool import MacpoolPool
+    from ucscsdk.mometa.macpool.MacpoolBlock import MacpoolBlock
 
     changed = False
     try:

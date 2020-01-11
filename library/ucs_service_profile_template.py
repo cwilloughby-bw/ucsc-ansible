@@ -194,15 +194,15 @@ from ansible.module_utils.remote_management.ucs import UCSModule, ucs_argument_s
 
 
 def configure_service_profile_template(ucs, module):
-    from ucsmsdk.mometa.ls.LsServer import LsServer
-    from ucsmsdk.mometa.vnic.VnicConnDef import VnicConnDef
-    from ucsmsdk.mometa.vnic.VnicIScsiNode import VnicIScsiNode
-    from ucsmsdk.mometa.ls.LsRequirement import LsRequirement
-    from ucsmsdk.mometa.ls.LsPower import LsPower
-    from ucsmsdk.mometa.lstorage.LstorageProfileBinding import LstorageProfileBinding
-    from ucsmsdk.mometa.mgmt.MgmtInterface import MgmtInterface
-    from ucsmsdk.mometa.mgmt.MgmtVnet import MgmtVnet
-    from ucsmsdk.mometa.vnic.VnicIpV4MgmtPooledAddr import VnicIpV4MgmtPooledAddr
+    from ucscsdk.mometa.ls.LsServer import LsServer
+    from ucscsdk.mometa.vnic.VnicConnDef import VnicConnDef
+    from ucscsdk.mometa.vnic.VnicIScsiNode import VnicIScsiNode
+    from ucscsdk.mometa.ls.LsRequirement import LsRequirement
+    from ucscsdk.mometa.ls.LsPower import LsPower
+    from ucscsdk.mometa.lstorage.LstorageProfileBinding import LstorageProfileBinding
+    from ucscsdk.mometa.mgmt.MgmtInterface import MgmtInterface
+    from ucscsdk.mometa.mgmt.MgmtVnet import MgmtVnet
+    from ucscsdk.mometa.vnic.VnicIpV4MgmtPooledAddr import VnicIpV4MgmtPooledAddr
 
     if not module.check_mode:
         try:
