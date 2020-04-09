@@ -1,3 +1,7 @@
 
 *.retry
 inventory
+inventory
+.vscode/settings.json
+example_playbook.yml
+*.gz

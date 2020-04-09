@@ -291,7 +291,7 @@ def get_ip_block(ucs, pool_dn, first_addr, last_addr, ip_version):
 
 def main():
     from ansible.module_utils.basic import AnsibleModule
-    from ansible.module_utils.remote_management.ucs import UCSModule, ucs_argument_spec
+    from ansible_collections.cwilloughby_bw.ucsc.plugins.module_utils.ucs import UCSModule, ucs_argument_spec
 
     ipv4_configuration_spec = dict(
         first_addr=dict(type='str'),

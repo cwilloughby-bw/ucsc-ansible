@@ -151,7 +151,7 @@ RETURN = r'''
 '''
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.remote_management.ucs import UCSModule, ucs_argument_spec
+from ansible_collections.cwilloughby_bw.ucsc.plugins.module_utils.ucs import UCSModule, ucs_argument_spec
 
 
 def configure_lan_connectivity(ucs, module, dn):

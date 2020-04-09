@@ -12,8 +12,8 @@ ANSIBLE_METADATA = {'metadata_version': '1.1',
 
 DOCUMENTATION = r'''
 ---
-module: ucs_vlans
-short_description: Configures VLANs on Cisco UCS Manager
+module: ucs_vmedia
+short_description: Configures a vMedia policy on Cisco UCS Central
 description:
 - Configures VLANs on Cisco UCS Manager.
 - Examples can be used with the UCS Platform Emulator U(https://communities.cisco.com/ucspe).
@@ -101,29 +101,42 @@ EXAMPLES = r'''
 RETURN = r'''
 #
 '''
-
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.remote_management.ucs import UCSModule, ucs_argument_spec
-
+from ansible_collections.cwilloughby_bw.ucsc.plugins.module_utils.ucs import UCSModule, ucs_argument_spec
 
 def main():
+
+    vmedia_entry_spec = dict(
+        auth_option=dict(type='str', default='none', choices=["default", "none", "ntlm", "ntlmi", "ntlmssp", "ntlmsspi", "ntlmv2", "ntlmv2i"]),
+        description=dict(type='str', default=''),
+        device_type=dict(type='str', required=True, choices=["cdd", "hdd", "unknown"]),
+        image_file_name=dict(type='str'),
+        image_name_variable=dict(type='str', default='none', choices=["none", "service-profile-name"]),
+        image_path=dict(type='str'),
+        mapping_name=dict(type='str', required=True),
+        mount_protocol=dict(type='str', default='http', choices=["cifs", "http", "https", "nfs", "unknown"]),
+        password=dict(type='str'),
+        remote_host=dict(type='str'),
+        remote_ip=dict(type='str'),
+        remote_port=dict(type='int'),
+        user_id=dict(type='str')
+    )
+
     argument_spec = ucs_argument_spec
     argument_spec.update(
+        org_dn=dict(type='str', default='org-root'),
         name=dict(type='str', required=True),
-        multicast_policy=dict(type='str', default=''),
-        fabric=dict(type='str', default='common', choices=['common', 'A', 'B']),
-        id=dict(type='str'),
-        sharing=dict(type='str', default='none', choices=['none', 'primary', 'isolated', 'community']),
-        native=dict(type='str', default='no', choices=['yes', 'no']),
+        description=dict(type='str', default=''),
+        retry_on_mount_fail=dict(type='str',default='yes', choices=['yes', 'no']),
+        vmedia_entries=dict(type='list', elements='dict', options=vmedia_entry_spec),
         state=dict(type='str', default='present', choices=['present', 'absent']),
-        domaingroup=dict(type='str', default='')
     )
 
     module = AnsibleModule(
         argument_spec,
         supports_check_mode=True,
         required_if=[
-            ['state', 'present', ['id']],
+            ['state', 'present', ['name']],
         ],
     )
     ucs = UCSModule(module)
@@ -131,23 +144,14 @@ def main():
     err = False
 
     # UCSModule creation above verifies ucscsdk is present and exits on failure, so additional imports are done below.
-    from ucscsdk.mometa.fabric.FabricLanCloud import FabricLanCloud
-    from ucscsdk.mometa.fabric.FabricVlan import FabricVlan
+    from ucscsdk.mometa.cimcvmedia.CimcvmediaMountConfigPolicy import CimcvmediaMountConfigPolicy
+    from ucscsdk.mometa.cimcvmedia.CimcvmediaConfigMountEntry import CimcvmediaConfigMountEntry
 
     changed = False
     try:
         mo_exists = False
         props_match = False
-        # dn is fabric/lan/net-<name> for common vlans or fabric/lan/[A or B]/net-<name> for A or B
-        dn_base = ''
-        if module.params['domaingroup']:
-            dn_base = 'domaingroup-root/domaingroup-{}/fabric/lan'.format(module.params['domaingroup'])
-        else:
-            dn_base = 'domaingroup-root/fabric/lan'
-        print(dn_base)
-        if module.params['fabric'] != 'common':
-            dn_base += '/' + module.params['fabric']
-        dn = dn_base + '/net-' + module.params['name']
+        dn = module.params['org_dn'] + '/mnt-cfg-policy-' + module.params['name']
 
         mo = ucs.login_handle.query_dn(dn)
         if mo:
@@ -163,26 +167,39 @@ def main():
         else:
             if mo_exists:
                 # check top-level mo props
-                kwargs = dict(id=module.params['id'])
-                kwargs['default_net'] = module.params['native']
-                kwargs['sharing'] = module.params['sharing']
-                kwargs['mcast_policy_name'] = module.params['multicast_policy']
+                kwargs = dict(name=module.params['name'])
+                kwargs['descr'] = module.params['description']
+                kwargs['retry_on_mount_fail'] = module.params['retry_on_mount_fail']
+                # check vmedia entries match
+                print(module.params['vmedia_entries'])
+                # derp = ucs.login_handle.query_children(mo)
+                # for vmedia_entry in module.params['vmedia_entries']:
+                    # print('hello world')
+                    # entry = ucs.login_handle.query_dn(dn+"/cfg-mnt-entry-"+vmedia_entry['mapping_name'])
+                    # # print(dn+"/cfg-mnt-entry-"+vmedia_entry['mapping_name'])
+                    # print(derp[vmedia_entry['mapping_name']])
+                    # if(entry.check_prop_match(**vmedia_entry)):
+                    #     match = True
+                    # else:
+                    #     match = False
+                    # props_match_checks[vmedia_entry['mapping_name']] = match
                 if (mo.check_prop_match(**kwargs)):
-                    props_match = True
-
+                    match = True
             if not props_match:
                 if not module.check_mode:
                     # create if mo does not already exist
-                    mo = FabricVlan(
-                        parent_mo_or_dn=dn_base,
+                    mo = CimcvmediaMountConfigPolicy(
+                        parent_mo_or_dn=module.params['org_dn'],
                         name=module.params['name'],
-                        id=module.params['id'],
-                        default_net=module.params['native'],
-                        sharing=module.params['sharing'],
-                        mcast_policy_name=module.params['multicast_policy'],
+                        descr=module.params['description'],
+                        retry_on_mount_fail=module.params['retry_on_mount_fail'],
                     )
-
                     ucs.login_handle.add_mo(mo, True)
+                    # for vmedia_entry in module.params['vmedia_entries']:
+                    #     entry = CimcvmediaConfigMountEntry(parent_mo_or_dn=dn,**vmedia_entry)
+                    #     ucs.login_handle.add_mo(entry, True)
+
+                    
                     ucs.login_handle.commit()
                 changed = True
 

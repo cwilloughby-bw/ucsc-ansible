@@ -4,22 +4,44 @@
   connection: local
   gather_facts: no
   tasks:
-  - name: Configure VLAN
-    ucs_vlans:
-      hostname: "{{ inventory_hostname }}"
-      username: "{{ username | default(omit) }}"
-      password: "{{ password }}"
-      state: "{{ state | default(omit) }}"
-      name: vlan2
-      id: '2'
-      native: 'no'
-      domaingroup: 'Lab-RDU'
-  - name: Configure VLAN-Group
-    ucs_vlan_to_group:
-      hostname: "{{ inventory_hostname }}"
-      username: "{{ username | default(omit) }}"
-      password: "{{ password }}"
-      state: "{{ state | default(omit) }}"
-      vlangroup: 'RHEV-VLANs'
-      vlanname: vlan2
-      domaingroup: 'Lab-RDU'
+    - name: Configure vMedia
+      cwilloughby_bw.ucsc.ucs_vmedia:
+        hostname: "{{ inventory_hostname }}"
+        username: "{{ username | default(omit) }}"
+        password: "{{ password }}"
+        name: "lab1-vm-centos"
+        description: "test blank vmedia policy"
+        vmedia_entries:
+        - mapping_name: kickstart
+          device_type: hdd
+          image_name_variable: service-profile-name
+          image_path: /builds/
+          mount_protocol: http
+          remote_host: ucsbuild.lab1.bwnet.us
+        - mapping_name: centos7
+          device_type: cdd
+          image_name_variable: service-profile-name
+          image_path: /installers/
+          mount_protocol: http
+          remote_host: ucsbuild.lab1.bwnet.us
+
+        # org_dn: "org-root/org-Bandwidth-Lab"
+  # - name: Configure VLAN
+  #   cwilloughby_bw.ucsc.ucs_vlans:
+  #     hostname: "{{ inventory_hostname }}"
+  #     username: "{{ username | default(omit) }}"
+  #     password: "{{ password }}"
+  #     state: "{{ state | default(omit) }}"
+  #     name: vlan2
+  #     id: '2'
+  #     native: 'no'
+  #     # domaingroup: 'Lab-RDU'
+  # - name: Configure VLAN-Group
+  #   cwilloughby_bw.ucsc.ucs_vlan_to_group:
+  #     hostname: "{{ inventory_hostname }}"
+  #     username: "{{ username | default(omit) }}"
+  #     password: "{{ password }}"
+  #     state: "{{ state | default(omit) }}"
+  #     vlangroup: 'RHEV-VLANs'
+  #     vlanname: vlan2
+  #     # domaingroup: 'Lab-RDU'
