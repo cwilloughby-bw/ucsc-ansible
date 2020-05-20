@@ -169,7 +169,7 @@ except ImportError:
 
 from copy import deepcopy
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.cwilloughby_bw.ucsc.plugins.module_utils.remote_management.ucs import UCSModule, ucs_argument_spec
+from ansible_collections.cwilloughby_bw.ucsc.plugins.module_utils.ucs import UCSModule, ucs_argument_spec
 
 
 def traverse_objects(module, ucs, managed_object, mo=''):
