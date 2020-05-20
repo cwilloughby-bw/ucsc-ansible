@@ -13,9 +13,9 @@ ANSIBLE_METADATA = {'metadata_version': '1.1',
 DOCUMENTATION = r'''
 ---
 module: ucs_vlans
-short_description: Configures VLANs on Cisco UCS Manager
+short_description: Configures VLANs on Cisco UCS Central
 description:
-- Configures VLANs on Cisco UCS Manager.
+- Configures VLANs on Cisco UCS Central.
 - Examples can be used with the UCS Platform Emulator U(https://communities.cisco.com/ucspe).
 extends_documentation_fragment: ucs
 options:

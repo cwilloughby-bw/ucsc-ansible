@@ -147,7 +147,7 @@ def main():
         if module.params['state'] == 'present':
             if not dnpooled1_exists:
                 if not module.check_mode:
-                    ucs.login_handle.add_mo(mo, True)
+                    ucs.login_handle.add_mo(mo_1, True)
                     ucs.login_handle.commit()
                 changed = True
 
