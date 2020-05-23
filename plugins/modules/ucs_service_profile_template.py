@@ -216,7 +216,7 @@ def configure_service_profile_template(ucs, module):
                 # graphics_card_policy_name=module.params['graphics_card_policy'],
                 host_fw_policy_name=module.params['host_firmware_package'],
                 ident_pool_name=module.params['uuid_pool'],
-                kvm_mgmt_policy_name=module.params['kvm_mgmt_policy'],
+                # kvm_mgmt_policy_name=module.params['kvm_mgmt_policy'],
                 local_disk_policy_name=module.params['local_disk_policy'],
                 maint_policy_name=module.params['maintenance_policy'],
                 mgmt_access_policy_name=module.params['ipmi_access_profile'],
