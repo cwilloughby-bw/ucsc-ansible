@@ -100,7 +100,6 @@ def main():
         org_dn=dict(type='str', default='org-root'),
         name=dict(type='str', required=True),
         descr=dict(type='str', default=''),
-        order=dict(type='str', default='default', choices=['default', 'sequential']),
         first_addr=dict(type='str'),
         last_addr=dict(type='str'),
         state=dict(default='present', choices=['present', 'absent'], type='str'),
@@ -136,7 +135,6 @@ def main():
         else:
             if mo_exists:
                 # check top-level mo props
-                kwargs = dict(assignment_order=module.params['order'])
                 kwargs['descr'] = module.params['descr']
                 if (mo.check_prop_match(**kwargs)):
                     # top-level props match, check next level mo/props
@@ -157,7 +155,6 @@ def main():
                         parent_mo_or_dn=module.params['org_dn'],
                         name=module.params['name'],
                         descr=module.params['descr'],
-                        assignment_order=module.params['order'],
                     )
 
                     if module.params['last_addr'] and module.params['first_addr']:
