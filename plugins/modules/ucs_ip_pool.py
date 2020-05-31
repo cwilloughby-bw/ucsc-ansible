@@ -40,14 +40,6 @@ options:
     - "You can use any characters or spaces except the following:"
     - "` (accent mark), \ (backslash), ^ (carat), \" (double quote), = (equal sign), > (greater than), < (less than), or ' (single quote)."
     aliases: [ descr ]
-  order:
-    description:
-    - The Assignment Order field.
-    - "This can be one of the following:"
-    - "default - Cisco UCS Manager selects a random identity from the pool."
-    - "sequential - Cisco UCS Manager selects the lowest available identity from the pool."
-    choices: [default, sequential]
-    default: default
   first_addr:
     description:
     - The first IPv4 address in the IPv4 addresses block.
@@ -193,7 +185,6 @@ def update_ip_pool(ucs, module):
         parent_mo_or_dn=module.params['org_dn'],
         name=module.params['name'],
         descr=module.params['descr'],
-        assignment_order=module.params['order'],
     )
     ucs.login_handle.add_mo(mo, True)
     ucs.login_handle.commit()
@@ -317,7 +308,6 @@ def main():
         org_dn=dict(type='str', default='org-root'),
         name=dict(type='str', required=True),
         descr=dict(type='str', default=''),
-        order=dict(type='str', default='default', choices=['default', 'sequential']),
         first_addr=dict(type='str'),
         last_addr=dict(type='str'),
         subnet_mask=dict(type='str', default='255.255.255.0'),
@@ -382,7 +372,6 @@ def main():
                 changed = True
             if mo_exists:
                 # check top-level mo props
-                kwargs = dict(assignment_order=module.params['order'])
                 kwargs['descr'] = module.params['descr']
                 if not mo.check_prop_match(**kwargs):
                     if not module.check_mode:
